@@ -1,0 +1,10 @@
+name: BR-MineHunt
+version: '${project.version}'
+main: com.ghostchu.plugins.brminehunt.BR_MineHunt
+api-version: '1.20'
+depend:
+  - Chunky
+commands:
+  minehunt:
+    usage: /minehunt
+    description: /minehunt

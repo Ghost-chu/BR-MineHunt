@@ -1,0 +1,73 @@
+max-players: 6
+min-players: 3
+runner-max: 2
+server-name: "BarbatosRealms"
+runner-airdrop: true
+waiting-time: 60
+pause-max-time: 120
+
+lang:
+  general:
+    invalid-command: "<red>无效的命令，使用 <yellow>/minehunt help</yellow> 查看您目前可以使用的命令"
+    available-commands: "<green>您目前可用的命令如下：</green>{0}"
+    how-to-play: |
+      <gray>MineHunt 友尽大逃杀</gray> 游玩指南
+      游戏包括两个队伍：<red>猎人</red>和<aqua>逃亡者</aqua>
+      作为<red>猎人</red>: 您需要获取一个指南针以定位逃亡者的位置，并在逃亡者杀死末影龙之前将他们击杀
+      作为<green>逃亡者</green>: 躲避猎人的抓捕，避免死亡，最终前往末地消灭末影龙以取得胜利 <red>逃亡者无法复活！</red>
+      -------
+      游戏开始后，逃亡者将被传送到地图上的一个随机位置，以确保您有足够的机会和时间的准备，但请注意，
+      猎人可以随时用指南针定位最近的逃亡者的位置。
+  not-started:
+    slot-full: "<red>很抱歉，但玩家人数已满，您只能作为旁观即将开始的游戏"
+    joined-as: "<aqua>您已作为 <yellow>{0}</yellow> 加入了游戏"
+    finding-slot: "<gray>由于人数已满，您将作为旁观者观战。一旦有队伍可供您加入，您将会自动加入"
+    spectating: "<aqua>您将不参与游戏过程，作为旁观者观战"
+    hotbar: "<aqua>您的身份是: <yellow>{0}</yellow>"
+    announcement: |
+      <gray>输入 <white>/minehunt howtoplay</white> 查看游玩方法
+      <gray>使用 <white>/minehunt spectate</white> 切换旁观模式
+    waiting-for-more-players: "<red>玩家人数不足，正在等待其他 {0} 个玩家"
+    starting-countdown: "<green>倒计时：<yellow>{0}</yellow></green>"
+    all-get-ready: "<yellow>人数已满，倒计时缩短！"
+    bossbar-map-generate: "<green>正在预加载游戏世界 <white>-</white> <gold>{0}</gold>，共生成 <blue>{1}</blue> 个区块"
+    bossbar-map-generated: "<green>世界准备就绪"
+    waiting-world-generate: "<green>请等待游戏世界预加载..."
+  started:
+    compass-different-dimension: "<red>追踪失败，位置未更新：<yellow>没有逃亡者和您处在同一个世界</yellow>"
+    compass-tracking: "<green>位置更新成功，您正在追踪：<green>{0}</green>"
+    runner-death: "<red>您已死亡，现在进入支援模式"
+    player-reconnected: "<green><yellow>{0}</yellow> 已重新连接"
+  ending-no-player:
+    session-ending: |
+      <red>由于队伍人数不足，游戏已取消。
+      <yellow>您已被切换为<green>创造模式</green>，在结束之前放飞自我吧！
+    title: "<red>游戏结束"
+    subtitle: "<green>队伍人数不足"
+    bossbar: "<red>游戏将在 <gold>{0}</gold> 秒后结束"
+  ending:
+    game-ended: |
+      <yellow>比赛结束，胜负已分！
+      <yellow>您已被切换为<green>创造模式</green>，在服务器关闭之前放飞自我吧！
+    shutdown-count-down: "<red>服务器将在 <gold>{0}</gold> 秒后关闭"
+    public-map-seed: "<gold>本场比赛地图种子：<white>[<green>{0}</green>]</white>"
+  match-complete:
+    runner-win: "<gold><bold>末影龙已被击杀，胜利属于<green>逃亡者</green>！"
+    hunter-win: "<gold><bold>逃亡者已死亡，胜利属于<red>猎人</red>！"
+    title-win: "<gold><bold>胜利！"
+    subtitle-win: "<green>您的队伍取得了最后的胜利！"
+    title-lose: "<red><bold>游戏结束！"
+    subtitle-lose: "<gray>很遗憾，下次再接再厉吧！"
+  paused:
+    title: "<yellow>技术暂停"
+    subtitle: "<gold>游戏时间进入暂停状态"
+    bossbar: "<yellow>技术暂停，剩余时间 <gold>{0}</gold> 秒"
+    player-reconnected: "<green><yellow>{0}</yellow> 已重新连接"
+    enter-message: |
+      由于技术原因，时间进入暂停状态。
+      在暂停时间内，您将无法移动、点击、和放置/破坏方块，直至暂停结束。
+      在一定时间内无法满足解除暂停的条件，时间暂停将会终止。
+    leave-message-ok: |
+      时间暂停状态解除，现在游戏继续。
+    leave-message-timeout: |
+      由于在指定时间内未能满足解除暂停的条件，时间暂停被迫中止。
