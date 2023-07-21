@@ -5,6 +5,7 @@ import com.ghostchu.plugins.brminehunt.game.PlayerRole;
 import com.ghostchu.plugins.brminehunt.game.gamemodule.GameNotStartedModule;
 import io.papermc.paper.event.player.AsyncChatEvent;
 import lombok.Getter;
+import net.kyori.adventure.bossbar.BossBar;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.ComponentLike;
 import net.kyori.adventure.text.TextReplacementConfig;
@@ -21,6 +22,8 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.Iterator;
 
 public final class BR_MineHunt extends JavaPlugin implements Listener {
     @Getter
@@ -48,7 +51,11 @@ public final class BR_MineHunt extends JavaPlugin implements Listener {
     }
     @EventHandler(ignoreCancelled = true)
     public void onPlayerLeft(PlayerQuitEvent event) {
-        event.getPlayer().activeBossBars().forEach(bossBar -> event.getPlayer().hideBossBar(bossBar));
+        Iterator<? extends BossBar> bossBarIterator = event.getPlayer().activeBossBars().iterator();
+        while (bossBarIterator.hasNext()){
+            bossBarIterator.next();
+            bossBarIterator.remove();
+        }
         if(game.getPlayerRole(event.getPlayer()) != null){
             game.getReconnectList().add(event.getPlayer().getUniqueId());
         }

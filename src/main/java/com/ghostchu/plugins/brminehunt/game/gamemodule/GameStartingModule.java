@@ -13,7 +13,6 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Random;
 
-@SuppressWarnings("deprecation")
 public class GameStartingModule extends AbstractGameModule implements GameModule, Listener, CommandExecutor {
 
     protected GameStartingModule(BR_MineHunt plugin, Game game) {
