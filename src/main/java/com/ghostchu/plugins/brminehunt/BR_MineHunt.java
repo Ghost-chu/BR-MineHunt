@@ -1,15 +1,12 @@
 package com.ghostchu.plugins.brminehunt;
 
 import com.ghostchu.plugins.brminehunt.game.Game;
-import com.ghostchu.plugins.brminehunt.game.PlayerRole;
 import com.ghostchu.plugins.brminehunt.game.gamemodule.GameNotStartedModule;
-import io.papermc.paper.event.player.AsyncChatEvent;
 import lombok.Getter;
 import net.kyori.adventure.bossbar.BossBar;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.ComponentLike;
 import net.kyori.adventure.text.TextReplacementConfig;
-import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.Bukkit;
@@ -70,19 +67,19 @@ public final class BR_MineHunt extends JavaPlugin implements Listener {
         event.getPlayer().setNoDamageTicks(100);
         game.getReconnectList().remove(event.getPlayer().getUniqueId());
     }
-    @EventHandler(ignoreCancelled = true)
-    public void onPlayerChat(AsyncChatEvent event) {
-        event.renderer((source, sourceDisplayName, message, viewer) -> {
-            PlayerRole role = game.getPlayerRole(source);
-            if (role == null) {
-                return Component.text("[观察者] ").color(NamedTextColor.GRAY).append(sourceDisplayName).append(Component.text(": ").color(NamedTextColor.WHITE)).append(message.color(NamedTextColor.GRAY));
-            }
-            return role.getChatPrefixComponent()
-                    .append(Component.text(source.getName()).color(NamedTextColor.WHITE))
-                    .append(Component.text(": ").color(NamedTextColor.WHITE))
-                    .append(message.color(NamedTextColor.WHITE));
-        });
-    }
+//    @EventHandler(ignoreCancelled = true)
+//    public void onPlayerChat(AsyncChatEvent event) {
+//        event.renderer((source, sourceDisplayName, message, viewer) -> {
+//            PlayerRole role = game.getPlayerRole(source);
+//            if (role == null) {
+//                return Component.text("[观察者] ").color(NamedTextColor.GRAY).append(sourceDisplayName).append(Component.text(": ").color(NamedTextColor.WHITE)).append(message.color(NamedTextColor.GRAY));
+//            }
+//            return role.getChatPrefixComponent()
+//                    .append(Component.text(source.getName()).color(NamedTextColor.WHITE))
+//                    .append(Component.text(": ").color(NamedTextColor.WHITE))
+//                    .append(message.color(NamedTextColor.WHITE));
+//        });
+//    }
 
     public Component text(String key, Object... args) {
         ConfigurationSection section = getConfig().getConfigurationSection("lang");

@@ -45,8 +45,8 @@ public class Game implements Listener {
         runnerTeam = mainScoreboard.registerNewTeam("runner");
         hunterTeam.color(PlayerRole.HUNTER.getColor());
         runnerTeam.color(PlayerRole.RUNNER.getColor());
-        hunterTeam.displayName(PlayerRole.HUNTER.getComponent());
-        runnerTeam.displayName(PlayerRole.RUNNER.getComponent());
+//        hunterTeam.displayName(PlayerRole.HUNTER.getComponent());
+//        runnerTeam.displayName(PlayerRole.RUNNER.getComponent());
         hunterTeam.setAllowFriendlyFire(false);
         runnerTeam.setAllowFriendlyFire(false);
         hunterTeam.setOption(Team.Option.COLLISION_RULE, Team.OptionStatus.FOR_OTHER_TEAMS);
@@ -91,7 +91,6 @@ public class Game implements Listener {
     @SuppressWarnings("removal")
     public void setPlayerRole(@NotNull UUID player, @Nullable PlayerRole playerRole) {
         OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(player);
-        Player p = offlinePlayer.getPlayer();
         if (playerRole == null) {
             this.roleMapping.remove(player);
             this.hunterTeam.removePlayer(offlinePlayer);

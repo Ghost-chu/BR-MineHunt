@@ -63,11 +63,11 @@ public class GameNotStartedModule extends AbstractGameModule implements GameModu
         if (chunky == null) return;
         chunky.startTask(defWorld.getName(), "square", spawnPoint.getBlockX(), spawnPoint.getBlockZ(), 500, 500, "concentric");
         chunky.onGenerationProgress(e -> {
-            if(!e.complete()) {
+            if (!e.complete()) {
                 mapGenerate.progress(e.progress() / 100.0f);
                 mapGenerate.color(BossBar.Color.YELLOW);
                 mapGenerate.name(plugin.text("not-started.bossbar-map-generate", String.format("%.2f", e.progress()) + "%", e.chunks()));
-            }else{
+            } else {
                 mapGenerate.progress(1.0f);
                 mapGenerate.color(BossBar.Color.GREEN);
                 mapGenerate.name(plugin.text("not-started.bossbar-map-generated"));
@@ -124,7 +124,7 @@ public class GameNotStartedModule extends AbstractGameModule implements GameModu
             return false;
         }
 
-        if(!worldPregenerated.get()) {
+        if (!worldPregenerated.get()) {
             bossBar.progress(1.0f);
             bossBar.name(plugin.text("not-started.waiting-world-generate"));
             bossBar.color(BossBar.Color.PINK);
@@ -263,7 +263,7 @@ public class GameNotStartedModule extends AbstractGameModule implements GameModu
             plugin.getLogger().info("Mark as cancel cause distance too far");
 
         }
-        if (shouldCancel) event.getPlayer().teleportAsync(spawnPoint).whenComplete((a,b)->{
+        if (shouldCancel) event.getPlayer().teleportAsync(spawnPoint).whenComplete((a, b) -> {
 
         });
     }
@@ -342,10 +342,15 @@ public class GameNotStartedModule extends AbstractGameModule implements GameModu
                     game.setPlayerRole(player, null);
                 }
             }
-            case "start" -> remainingTime = 5 * 20;
+            case "start" -> {
+                if (sender.hasPermission("minehunt.admin.start")) {
+                    remainingTime = 5 * 20;
+                }
+            }
             case "howtoplay" -> player.sendMessage(plugin.text("general.how-to-play"));
+            case "codusk" -> player.sendMessage(ChatColor.GOLD + "鱼头，小片三呢？");
             case "help" ->
-                    player.sendMessage(plugin.text("general.available-commands", "/minehunt howtoplay, /minehunt spectate"));
+                    player.sendMessage(plugin.text("general.available-commands", "/minehunt howtoplay, /minehunt spectate", "/minehunt codusk"));
             default -> player.sendMessage(plugin.text("general.invalid-command"));
         }
         return true;

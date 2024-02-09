@@ -30,9 +30,7 @@ public class GameEndingModule extends AbstractGameModule implements GameModule, 
         game.getAllRoleMembers().stream().map(Bukkit::getPlayer).filter(Objects::nonNull).forEach(p -> p.setGameMode(GameMode.CREATIVE));
         Bukkit.broadcast(plugin.text("ending.game-ended"));
         Bukkit.broadcast(plugin.text("ending.public-map-seed", Bukkit.getWorlds().get(0).getSeed()));
-        Bukkit.getOnlinePlayers().forEach(p -> {
-            p.showBossBar(bossBar);
-        });
+        Bukkit.getOnlinePlayers().forEach(p -> p.showBossBar(bossBar));
         remains = endTimer;
         return null;
     }
