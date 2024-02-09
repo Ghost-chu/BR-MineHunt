@@ -4,6 +4,7 @@ main: com.ghostchu.plugins.brminehunt.BR_MineHunt
 api-version: '1.20'
 depend:
   - Chunky
+  - ProtocolLib
 commands:
   minehunt:
     usage: /minehunt

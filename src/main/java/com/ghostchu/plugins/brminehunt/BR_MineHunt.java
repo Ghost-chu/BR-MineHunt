@@ -23,12 +23,15 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 public final class BR_MineHunt extends JavaPlugin implements Listener {
     @Getter
     private static BR_MineHunt instance;
     private Game game;
+
 
     @Override
     public void onEnable() {
@@ -42,7 +45,6 @@ public final class BR_MineHunt extends JavaPlugin implements Listener {
         game.setActiveModule(new GameNotStartedModule(this, game));
         World defWorld = Bukkit.getWorlds().get(0);
         Bukkit.getWorlds().get(0).getChunkAt(defWorld.getSpawnLocation()).addPluginChunkTicket(this);
-
     }
 
     @Override
@@ -52,10 +54,11 @@ public final class BR_MineHunt extends JavaPlugin implements Listener {
     @EventHandler(ignoreCancelled = true)
     public void onPlayerLeft(PlayerQuitEvent event) {
         Iterator<? extends BossBar> bossBarIterator = event.getPlayer().activeBossBars().iterator();
+        List<BossBar> bossBarToRemove = new ArrayList<>();
         while (bossBarIterator.hasNext()){
-            bossBarIterator.next();
-            bossBarIterator.remove();
+            bossBarToRemove.add(bossBarIterator.next());
         }
+        bossBarToRemove.forEach(b->event.getPlayer().hideBossBar(b));
         if(game.getPlayerRole(event.getPlayer()) != null){
             game.getReconnectList().add(event.getPlayer().getUniqueId());
         }

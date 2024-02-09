@@ -76,10 +76,13 @@ public class GameStartedModule extends AbstractGameModule implements GameModule,
 
     @EventHandler(ignoreCancelled = true)
     public void onPlayerJoin(PlayerJoinEvent event) {
-        if (game.getPlayerRole(event.getPlayer()) == null) return;
-        event.joinMessage(plugin.text("paused.player-reconnected", event.getPlayer().getName()));
-        event.getPlayer().setNoDamageTicks(100);
-        game.getReconnectList().remove(event.getPlayer().getUniqueId());
+        if (game.getPlayerRole(event.getPlayer()) != null) {
+            event.joinMessage(plugin.text("paused.player-reconnected", event.getPlayer().getName()));
+            event.getPlayer().setNoDamageTicks(100);
+            game.getReconnectList().remove(event.getPlayer().getUniqueId());
+        }else{
+            event.getPlayer().setGameMode(GameMode.SPECTATOR);
+        }
     }
 
     @EventHandler(ignoreCancelled = true)

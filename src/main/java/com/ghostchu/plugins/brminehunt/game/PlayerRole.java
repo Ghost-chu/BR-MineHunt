@@ -24,6 +24,10 @@ public enum PlayerRole {
         return color;
     }
 
+    public Component getComponent() {
+        return Component.text(getDisplay()).color(getColor());
+    }
+
     public Component getChatPrefixComponent() {
         return Component.text("[" + getDisplay() + "]").color(getColor());
     }

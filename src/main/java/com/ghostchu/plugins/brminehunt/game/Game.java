@@ -6,10 +6,7 @@ import com.google.common.collect.ImmutableList;
 import lombok.Getter;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
-import org.bukkit.Bukkit;
-import org.bukkit.GameMode;
-import org.bukkit.Sound;
-import org.bukkit.SoundCategory;
+import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
@@ -38,25 +35,26 @@ public class Game implements Listener {
     private final Map<UUID, PlayerRole> roleMapping = new ConcurrentHashMap<>(); //线程安全
     @Getter
     private final Set<UUID> reconnectList = new CopyOnWriteArraySet<>();
-
     public Game(BR_MineHunt plugin) {
         this.plugin = plugin;
         Bukkit.getPluginManager().registerEvents(this, plugin);
         Bukkit.getScheduler().runTaskTimer(plugin, this::tickGameModule, 0, 1);
         ScoreboardManager scoreboardManager = Bukkit.getScoreboardManager();
         Scoreboard mainScoreboard = scoreboardManager.getMainScoreboard();
-        hunterTeam = mainScoreboard.registerNewTeam(PlayerRole.HUNTER.name());
-        runnerTeam = mainScoreboard.registerNewTeam(PlayerRole.RUNNER.name());
+        hunterTeam = mainScoreboard.registerNewTeam("hunter");
+        runnerTeam = mainScoreboard.registerNewTeam("runner");
         hunterTeam.color(PlayerRole.HUNTER.getColor());
         runnerTeam.color(PlayerRole.RUNNER.getColor());
+        hunterTeam.displayName(PlayerRole.HUNTER.getComponent());
+        runnerTeam.displayName(PlayerRole.RUNNER.getComponent());
         hunterTeam.setAllowFriendlyFire(false);
         runnerTeam.setAllowFriendlyFire(false);
-        hunterTeam.prefix(PlayerRole.HUNTER.getChatPrefixComponent());
-        runnerTeam.prefix(PlayerRole.RUNNER.getChatPrefixComponent());
         hunterTeam.setOption(Team.Option.COLLISION_RULE, Team.OptionStatus.FOR_OTHER_TEAMS);
         runnerTeam.setOption(Team.Option.COLLISION_RULE, Team.OptionStatus.FOR_OTHER_TEAMS);
         hunterTeam.setCanSeeFriendlyInvisibles(true);
         runnerTeam.setCanSeeFriendlyInvisibles(true);
+        hunterTeam.prefix(PlayerRole.HUNTER.getChatPrefixComponent());
+        runnerTeam.prefix(PlayerRole.RUNNER.getChatPrefixComponent());
     }
 
     private void tickGameModule() {
@@ -72,6 +70,7 @@ public class Game implements Listener {
         if (switchedModule != null) {
             setActiveModule(switchedModule);
         }
+
     }
 
     public void setActiveModule(GameModule switchGameModule) {
@@ -86,28 +85,27 @@ public class Game implements Listener {
 
 
     public void setPlayerRole(@NotNull Player player, @Nullable PlayerRole playerRole) {
-        if (playerRole == null) {
-            this.roleMapping.remove(player.getUniqueId());
-        } else {
-            this.roleMapping.put(player.getUniqueId(), playerRole);
-        }
+        setPlayerRole(player.getUniqueId(), playerRole);
     }
 
+    @SuppressWarnings("removal")
     public void setPlayerRole(@NotNull UUID player, @Nullable PlayerRole playerRole) {
+        OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(player);
+        Player p = offlinePlayer.getPlayer();
         if (playerRole == null) {
             this.roleMapping.remove(player);
-            this.hunterTeam.removePlayer(Bukkit.getOfflinePlayer(player));
-            this.runnerTeam.removePlayer(Bukkit.getOfflinePlayer(player));
+            this.hunterTeam.removePlayer(offlinePlayer);
+            this.runnerTeam.removePlayer(offlinePlayer);
         } else {
             this.roleMapping.put(player, playerRole);
-            switch (playerRole){
-                case HUNTER -> this.hunterTeam.addPlayer(Bukkit.getOfflinePlayer(player));
-                case RUNNER -> this.runnerTeam.addPlayer(Bukkit.getOfflinePlayer(player));
+            switch (playerRole) {
+                case HUNTER -> this.hunterTeam.addPlayer(offlinePlayer);
+                case RUNNER -> this.runnerTeam.addPlayer(offlinePlayer);
             }
         }
     }
 
-    public void makeReadyPlayer(Player p){
+    public void makeReadyPlayer(Player p) {
         p.setGameMode(GameMode.SURVIVAL);
         p.setInvulnerable(false);
         p.setExp(0);

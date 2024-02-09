@@ -16,7 +16,7 @@ public class GameShutdownServerModule extends AbstractGameModule implements Game
 
     @Override
     public GameModule init() {
-        Bukkit.shutdown();
+        Bukkit.spigot().restart();
         return null;
     }
 
