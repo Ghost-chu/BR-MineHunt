@@ -10,7 +10,7 @@ lang:
   general:
     invalid-command: "<red>无效的命令，使用 <yellow>/minehunt help</yellow> 查看您目前可以使用的命令"
     available-commands: "<green>您目前可用的命令如下：</green>{0}"
-    how-to-play: |
+    how-to-play: |-
       <gray>MineHunt 友尽大逃杀</gray> 游玩指南
       游戏包括两个队伍：<red>猎人</red>和<aqua>逃亡者</aqua>
       作为<red>猎人</red>: 您需要获取一个指南针以定位逃亡者的位置，并在逃亡者杀死末影龙之前将他们击杀
@@ -19,13 +19,23 @@ lang:
       游戏开始后，逃亡者将被传送到地图上的一个随机位置，以确保您有足够的机会和时间的准备，但请注意，
       猎人可以随时用指南针定位最近的逃亡者的位置。
     joined-as-spectator: "<gray>{0} 以观察者身份加入旁观游戏</gray>"
+    anti-cheat-warning: |-
+      <red><b>MineHunt 公平竞技准则</b></red>
+      <white><underlined>在与任何人一同游玩时：</underlined></white>
+      <white>- 永远不要作弊</white>
+      <white>- 永远不要辱骂你的队友</white>
+      <white>- 切勿以任何理由使用任何类型自动化工具</white>
+      <white><underlined>在与有其他人的比赛中：</underlined></white>
+      <white>- 不跨队组队</white>
+      <white>- 为了比赛胜利而努力</white>
+      <dark_gray>您的小地图模组应该已被调整为公平竞技模式。</dark_gray>
   not-started:
     slot-full: "<red>很抱歉，但玩家人数已满，您只能作为旁观即将开始的游戏"
     joined-as: "<aqua>您已作为 <yellow>{0}</yellow> 加入了游戏"
     finding-slot: "<gray>由于人数已满，您将作为旁观者观战。一旦有队伍可供您加入，您将会自动加入"
     spectating: "<aqua>您将不参与游戏过程，作为旁观者观战"
     hotbar: "<aqua>您的身份是: <yellow>{0}</yellow>"
-    announcement: |
+    announcement: |-
       <gray>输入 <white>/minehunt howtoplay</white> 查看游玩方法
       <gray>使用 <white>/minehunt spectate</white> 切换旁观模式
     waiting-for-more-players: "<red>玩家人数不足，正在等待其他 {0} 个玩家"
@@ -42,14 +52,14 @@ lang:
     you-are-spectator: "<gray><i>您的身份是观察者，比赛期间发送的聊天无法被选手看到</i></gray>"
     you-are-supporter: "<gray><i>您已进入支援模式，请善用观察者模式帮助你的队友</i></gray>"
   ending-no-player:
-    session-ending: |
+    session-ending: |-
       <red>由于队伍人数不足，游戏已取消。
       <yellow>您已被切换为<green>创造模式</green>，在结束之前放飞自我吧！
     title: "<red>游戏结束"
     subtitle: "<green>队伍人数不足"
     bossbar: "<red>游戏将在 <gold>{0}</gold> 秒后结束"
   ending:
-    game-ended: |
+    game-ended: |-
       <yellow>比赛结束，胜负已分！
       <yellow>您已被切换为<green>创造模式</green>，在服务器关闭之前放飞自我吧！
     shutdown-count-down: "<red>服务器将在 <gold>{0}</gold> 秒后关闭"
@@ -66,11 +76,11 @@ lang:
     subtitle: "<gold>游戏时间进入暂停状态"
     bossbar: "<yellow>技术暂停，剩余时间 <gold>{0}</gold> 秒"
     player-reconnected: "<green><yellow>{0}</yellow> 已重新连接"
-    enter-message: |
+    enter-message: |-
       由于技术原因，时间进入暂停状态。
       在暂停时间内，您将无法移动、点击、和放置/破坏方块，直至暂停结束。
       在一定时间内无法满足解除暂停的条件，时间暂停将会终止。
-    leave-message-ok: |
+    leave-message-ok: |-
       时间暂停状态解除，现在游戏继续。
-    leave-message-timeout: |
+    leave-message-timeout: |-
       由于在指定时间内未能满足解除暂停的条件，时间暂停被迫中止。

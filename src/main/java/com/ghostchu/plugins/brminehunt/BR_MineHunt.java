@@ -4,6 +4,7 @@ import com.ghostchu.plugins.brminehunt.game.Game;
 import com.ghostchu.plugins.brminehunt.game.PlayerRole;
 import com.ghostchu.plugins.brminehunt.game.gamemodule.GameNotStartedModule;
 import com.ghostchu.plugins.brminehunt.game.gamemodule.GameStartedModule;
+import com.google.gson.Gson;
 import lombok.Getter;
 import net.kyori.adventure.bossbar.BossBar;
 import net.kyori.adventure.text.Component;
@@ -17,11 +18,11 @@ import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.player.AsyncPlayerChatEvent;
-import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.player.*;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.plugin.messaging.PluginMessageListener;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -29,10 +30,11 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-public final class BR_MineHunt extends JavaPlugin implements Listener {
+public final class BR_MineHunt extends JavaPlugin implements Listener, @NotNull PluginMessageListener {
     @Getter
     private static BR_MineHunt instance;
     private Game game;
+    private Gson gson = new Gson();
 
 
     @Override
@@ -47,6 +49,8 @@ public final class BR_MineHunt extends JavaPlugin implements Listener {
         game.setActiveModule(new GameNotStartedModule(this, game));
         World defWorld = Bukkit.getWorlds().get(0);
         Bukkit.getWorlds().get(0).getChunkAt(defWorld.getSpawnLocation()).addPluginChunkTicket(this);
+        Bukkit.getMessenger().registerIncomingPluginChannel(this, "journeymap:perm_req", this);
+        Bukkit.getMessenger().registerOutgoingPluginChannel(this, "journeymap:perm_req");
     }
 
     @Override
@@ -68,11 +72,41 @@ public final class BR_MineHunt extends JavaPlugin implements Listener {
     }
 
     @EventHandler(ignoreCancelled = true)
+    public void onPlayerJoin(PlayerRegisterChannelEvent event) {
+        getLogger().info(event.getChannel());
+    }
+
+    @EventHandler(ignoreCancelled = true)
     public void onPlayerJoin(PlayerJoinEvent event) {
         if (game.getPlayerRole(event.getPlayer()) == null) return;
         event.joinMessage(text("paused.player-reconnected", event.getPlayer().getName()));
         event.getPlayer().setNoDamageTicks(100);
         game.getReconnectList().remove(event.getPlayer().getUniqueId());
+    }
+
+    @EventHandler(ignoreCancelled = true)
+    public void antiCheat(PlayerJoinEvent event) {
+        playerAntiCheat(event.getPlayer());
+        Bukkit.getScheduler().runTaskLater(this, () -> {
+            event.getPlayer().sendMessage(text("general.anti-cheat-warning"));
+        }, 60L);
+    }
+
+    @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
+    public void antiCheat(PlayerChangedWorldEvent event) {
+        Bukkit.getScheduler().runTaskLater(this, () -> playerAntiCheat(event.getPlayer()), 2L);
+    }
+
+    private void playerAntiCheat(Player player) {
+        player.sendMessage(MiniMessage.miniMessage().deserialize(
+                "<dark_aqua> </dark_aqua><gold> </gold><dark_aqua> </dark_aqua><gold> </gold><dark_aqua> </dark_aqua><gold> </gold><yellow> </yellow>"
+        ));
+        player.sendMessage(MiniMessage.miniMessage().deserialize(
+                "<dark_aqua> </dark_aqua><gold> </gold><dark_aqua> </dark_aqua><gold> </gold><dark_aqua> </dark_aqua><gold> </gold><light_purple> </light_purple>"
+        ));
+        player.sendMessage(Component.text("§f§a§i§r§x§a§e§r§o"));
+        player.sendMessage(Component.text("§3 §6 §3 §6 §3 §6 §d"));
+        player.sendMessage(Component.text("§3 §6 §3 §6 §3 §6 §e"));
     }
 
     @EventHandler(ignoreCancelled = true)
@@ -189,5 +223,10 @@ public final class BR_MineHunt extends JavaPlugin implements Listener {
                     .build());
         }
         return origin.compact();
+    }
+
+    @Override
+    public void onPluginMessageReceived(@NotNull String channel, @NotNull Player player, @NotNull byte[] message) {
+        player.kick(Component.text("JourneyMap incompatible with this server."));
     }
 }

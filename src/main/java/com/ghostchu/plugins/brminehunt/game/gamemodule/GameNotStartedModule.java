@@ -144,7 +144,7 @@ public class GameNotStartedModule extends AbstractGameModule implements GameModu
 
     private void broadcastAnnouncement() {
         if (Bukkit.getOnlinePlayers().isEmpty()) return;
-        if (totalTicked % (20 * 8) == 0) {
+        if (totalTicked % (20 * 12) == 0) {
             Bukkit.broadcast(plugin.text("not-started.announcement"));
         }
     }
