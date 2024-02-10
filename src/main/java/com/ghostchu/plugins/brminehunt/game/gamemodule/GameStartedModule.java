@@ -21,6 +21,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.CompassMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Objects;
 import java.util.UUID;
@@ -103,7 +104,9 @@ public class GameStartedModule extends AbstractGameModule implements GameModule,
             return;
         }
         CompassMeta compassMeta = (CompassMeta) event.getItem().getItemMeta();
-        compassMeta.setLodestone(closestRunner.getLocation());
+        Location loc = closestRunner.getLocation().clone();
+        loc.setY(255);
+        compassMeta.setLodestone(loc);
         compassMeta.setLodestoneTracked(false);
         event.getItem().setItemMeta(compassMeta);
         player.sendActionBar(plugin.text("started.compass-tracking", closestRunner.getName()));
@@ -147,7 +150,7 @@ public class GameStartedModule extends AbstractGameModule implements GameModule,
         lastFocusLoc = new Location(event.getEntity().getWorld(), 0, 80, 0);
         dragonKilledMark = true;
     }
-
+    @Nullable
     private Player findClosestRunner(Player hunter) {
         Player closestRunner = null;
         for (Player runner : game.getRoleMembers(PlayerRole.RUNNER).stream().map(Bukkit::getPlayer).toList()) {
@@ -161,7 +164,8 @@ public class GameStartedModule extends AbstractGameModule implements GameModule,
                 closestRunner = runner;
                 continue;
             }
-            if (runner.getLocation().distance(runner.getLocation()) < closestRunner.getLocation().distance(closestRunner.getLocation())) {
+
+            if (hunter.getLocation().distance(runner.getLocation()) < hunter.getLocation().distance(closestRunner.getLocation())) {
                 closestRunner = runner;
             }
         }

@@ -4,8 +4,10 @@ import com.ghostchu.plugins.brminehunt.BR_MineHunt;
 import com.ghostchu.plugins.brminehunt.game.gamemodule.GameModule;
 import com.google.common.collect.ImmutableList;
 import lombok.Getter;
+import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
+import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
@@ -32,10 +34,12 @@ public class Game implements Listener {
     private final Map<UUID, PlayerRole> roleMapping = new ConcurrentHashMap<>(); //线程安全
     @Getter
     private final Set<UUID> reconnectList = new CopyOnWriteArraySet<>();
+
     public Game(BR_MineHunt plugin) {
         this.plugin = plugin;
         Bukkit.getPluginManager().registerEvents(this, plugin);
         Bukkit.getScheduler().runTaskTimer(plugin, this::tickGameModule, 0, 1);
+        Bukkit.getScheduler().runTaskTimer(plugin, this::tickActionBarMessage, 0, 5);
         ScoreboardManager scoreboardManager = Bukkit.getScoreboardManager();
         Scoreboard mainScoreboard = scoreboardManager.getMainScoreboard();
         hunterTeam = mainScoreboard.registerNewTeam("hunter");
@@ -52,6 +56,17 @@ public class Game implements Listener {
         runnerTeam.setCanSeeFriendlyInvisibles(true);
         hunterTeam.prefix(PlayerRole.HUNTER.getChatPrefixComponent());
         runnerTeam.prefix(PlayerRole.RUNNER.getChatPrefixComponent());
+    }
+
+    private void tickActionBarMessage() {
+        for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
+            if (getPlayerRole(onlinePlayer.getUniqueId()) == null) {
+                onlinePlayer.sendActionBar(Component.text("您的身份是观察者，发送的聊天消息比赛内人员无法查看").color(NamedTextColor.GRAY).decorate(TextDecoration.ITALIC));
+            }
+            if (getPlayerRole(onlinePlayer.getUniqueId()) == PlayerRole.RUNNER && onlinePlayer.getGameMode() == GameMode.SPECTATOR) {
+                onlinePlayer.sendActionBar(Component.text("支援模式，可以使用旁观模式功能帮助你的队友").color(NamedTextColor.GRAY).decorate(TextDecoration.ITALIC));
+            }
+        }
     }
 
     private void tickGameModule() {

@@ -1,17 +1,22 @@
 package com.ghostchu.plugins.brminehunt;
 
 import com.ghostchu.plugins.brminehunt.game.Game;
+import com.ghostchu.plugins.brminehunt.game.PlayerRole;
 import com.ghostchu.plugins.brminehunt.game.gamemodule.GameNotStartedModule;
+import io.papermc.paper.event.player.AsyncChatEvent;
 import lombok.Getter;
 import net.kyori.adventure.bossbar.BossBar;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.ComponentLike;
 import net.kyori.adventure.text.TextReplacementConfig;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
@@ -67,19 +72,26 @@ public final class BR_MineHunt extends JavaPlugin implements Listener {
         event.getPlayer().setNoDamageTicks(100);
         game.getReconnectList().remove(event.getPlayer().getUniqueId());
     }
-//    @EventHandler(ignoreCancelled = true)
-//    public void onPlayerChat(AsyncChatEvent event) {
-//        event.renderer((source, sourceDisplayName, message, viewer) -> {
-//            PlayerRole role = game.getPlayerRole(source);
-//            if (role == null) {
-//                return Component.text("[观察者] ").color(NamedTextColor.GRAY).append(sourceDisplayName).append(Component.text(": ").color(NamedTextColor.WHITE)).append(message.color(NamedTextColor.GRAY));
-//            }
-//            return role.getChatPrefixComponent()
-//                    .append(Component.text(source.getName()).color(NamedTextColor.WHITE))
-//                    .append(Component.text(": ").color(NamedTextColor.WHITE))
-//                    .append(message.color(NamedTextColor.WHITE));
-//        });
-//    }
+    @EventHandler(ignoreCancelled = true)
+    public void onPlayerChat(AsyncChatEvent event) {
+        event.renderer((source, sourceDisplayName, message, viewer) -> {
+            PlayerRole sourceRole = game.getPlayerRole(source);
+            PlayerRole viewerRole = null;
+            if(viewer instanceof Player player){
+                viewerRole = game.getPlayerRole(player);
+            }
+            if(sourceRole == null && viewerRole != null){
+                message = Component.text("<一条观察者消息，您无法查看>").color(NamedTextColor.GRAY).decorate(TextDecoration.ITALIC);
+            }
+            if (sourceRole == null) {
+                return Component.text("[观察者] ").color(NamedTextColor.GRAY).append(sourceDisplayName).append(Component.text(": ").color(NamedTextColor.WHITE)).append(message.color(NamedTextColor.GRAY));
+            }
+            return sourceRole.getChatPrefixComponent()
+                    .append(Component.text(source.getName()).color(NamedTextColor.WHITE))
+                    .append(Component.text(": ").color(NamedTextColor.WHITE))
+                    .append(message.color(NamedTextColor.WHITE));
+        });
+    }
 
     public Component text(String key, Object... args) {
         ConfigurationSection section = getConfig().getConfigurationSection("lang");
