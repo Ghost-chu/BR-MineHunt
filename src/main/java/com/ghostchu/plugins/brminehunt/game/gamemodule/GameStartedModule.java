@@ -42,6 +42,7 @@ public class GameStartedModule extends AbstractGameModule implements GameModule,
             p.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 20 * 3, 255, false, false));
             p.addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 20 * 3, 255, false, false));
             p.playSound(p.getLocation(), Sound.BLOCK_ANVIL_USE, 1.0f, 1.0f);
+            p.setGameMode(GameMode.SURVIVAL);
         });
         return null;
     }
@@ -49,8 +50,11 @@ public class GameStartedModule extends AbstractGameModule implements GameModule,
     @Override
     public GameModule tick() {
         totalTicked++;
-        if (!game.getReconnectList().isEmpty())
-            return new GamePausedModule(plugin, game, this, new GameEndingNoPlayerModule(plugin, game), v -> game.getReconnectList().isEmpty());
+        if (!game.getReconnectList().isEmpty()) {
+            if (game.getRoleMembersOnline(PlayerRole.HUNTER).isEmpty() || game.getRoleMembersOnline(PlayerRole.RUNNER).isEmpty()) {
+                return new GamePausedModule(plugin, game, this, new GameEndingNoPlayerModule(plugin, game), v -> !game.getRoleMembersOnline(PlayerRole.HUNTER).isEmpty() && !game.getRoleMembersOnline(PlayerRole.RUNNER).isEmpty());
+            }
+        }
         if (dragonKilledMark) return new GameRunnerWinModule(plugin, game, lastFocusLoc);
         if (checkNoRunnerAlive()) return new GameHunterWinModule(plugin, game, lastFocusLoc);
         return null;
@@ -81,7 +85,7 @@ public class GameStartedModule extends AbstractGameModule implements GameModule,
             event.getPlayer().setNoDamageTicks(100);
             game.getReconnectList().remove(event.getPlayer().getUniqueId());
         } else {
-            event.getPlayer().setGameMode(GameMode.SPECTATOR);
+            Bukkit.getScheduler().runTaskLater(plugin, () -> event.getPlayer().setGameMode(GameMode.SPECTATOR), 1);
         }
     }
 

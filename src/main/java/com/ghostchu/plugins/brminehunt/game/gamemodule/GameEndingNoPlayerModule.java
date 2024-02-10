@@ -52,8 +52,10 @@ public class GameEndingNoPlayerModule extends AbstractGameModule implements Game
 
     @EventHandler(ignoreCancelled = true)
     public void onPlayerJoin(PlayerJoinEvent event){
-        event.getPlayer().setGameMode(GameMode.CREATIVE);
-        event.getPlayer().showBossBar(bossBar);
+        Bukkit.getScheduler().runTaskLater(plugin, ()->{
+            event.getPlayer().setGameMode(GameMode.CREATIVE);
+            event.getPlayer().showBossBar(bossBar);
+        },1);
     }
 
     @Override

@@ -12,7 +12,9 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -40,6 +42,17 @@ public class GameHunterWinModule extends AbstractGameModule implements GameModul
         game.getRoleMembers(PlayerRole.RUNNER).stream().map(Bukkit::getPlayer).toList().forEach(p-> p.showTitle(Title.title(plugin.text("match-complete.title-lose"),plugin.text("match-complete.subtitle-lose") )));
         Bukkit.broadcast(plugin.text("match-complete.hunter-win"));
         return null;
+    }
+
+    @EventHandler(ignoreCancelled = true)
+    public void onPlayerJoin(PlayerJoinEvent event) {
+        if (game.getPlayerRole(event.getPlayer()) != null) {
+            event.joinMessage(plugin.text("paused.player-reconnected", event.getPlayer().getName()));
+            event.getPlayer().setNoDamageTicks(100);
+            game.getReconnectList().remove(event.getPlayer().getUniqueId());
+        } else {
+            Bukkit.getScheduler().runTaskLater(plugin, () -> event.getPlayer().setGameMode(GameMode.SPECTATOR), 1);
+        }
     }
 
     @Override

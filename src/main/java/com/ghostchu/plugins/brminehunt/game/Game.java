@@ -16,10 +16,7 @@ import org.bukkit.scoreboard.Team;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Collection;
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.logging.Logger;
@@ -135,6 +132,13 @@ public class Game implements Listener {
     @NotNull
     public Collection<UUID> getRoleMembers(@NotNull PlayerRole role) {
         return roleMapping.entrySet().stream().filter(entry -> entry.getValue() == role).map(Map.Entry::getKey).toList();
+    }
+
+    @NotNull
+    public Collection<Player> getRoleMembersOnline(@NotNull PlayerRole role) {
+        return roleMapping.entrySet().stream().filter(entry -> entry.getValue() == role).map(Map.Entry::getKey)
+                .map(Bukkit::getPlayer)
+                .filter(Objects::nonNull).toList();
     }
 
     @Nullable
