@@ -59,7 +59,7 @@ public class GameStartedModule extends AbstractGameModule implements GameModule,
     private boolean checkNoRunnerAlive() {
         boolean anyAlive = false;
         for (UUID roleMemberUUID : game.getRoleMembers(PlayerRole.RUNNER).stream().toList()) {
-            if(game.getReconnectList().contains(roleMemberUUID)) return false;
+            if (game.getReconnectList().contains(roleMemberUUID)) return false;
             Player roleMember = Bukkit.getPlayer(roleMemberUUID);
             if (roleMember == null) continue;
             if (roleMember.getGameMode() == GameMode.SURVIVAL) anyAlive = true;
@@ -70,7 +70,7 @@ public class GameStartedModule extends AbstractGameModule implements GameModule,
     @EventHandler(ignoreCancelled = true)
     public void onPlayerRespawn(PlayerRespawnEvent event) {
         if (PlayerRole.HUNTER == game.getPlayerRole(event.getPlayer())) {
-            event.getPlayer().getInventory().addItem(new ItemStack(Material.COMPASS,1));
+            event.getPlayer().getInventory().addItem(new ItemStack(Material.COMPASS, 1));
         }
     }
 
@@ -80,7 +80,7 @@ public class GameStartedModule extends AbstractGameModule implements GameModule,
             event.joinMessage(plugin.text("paused.player-reconnected", event.getPlayer().getName()));
             event.getPlayer().setNoDamageTicks(100);
             game.getReconnectList().remove(event.getPlayer().getUniqueId());
-        }else{
+        } else {
             event.getPlayer().setGameMode(GameMode.SPECTATOR);
         }
     }
