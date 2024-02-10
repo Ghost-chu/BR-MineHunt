@@ -51,6 +51,16 @@ public class GameStartedModule extends AbstractGameModule implements GameModule,
     @Override
     public GameModule tick() {
         totalTicked++;
+        if (totalTicked % 5 == 0) {
+            for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
+                if (game.getPlayerRole(onlinePlayer.getUniqueId()) == null) {
+                    onlinePlayer.sendActionBar(plugin.text("you-are-spectator"));
+                }
+                if (game.getPlayerRole(onlinePlayer.getUniqueId()) == PlayerRole.RUNNER && onlinePlayer.getGameMode() == GameMode.SPECTATOR) {
+                    onlinePlayer.sendActionBar(plugin.text("you-are-supporter"));
+                }
+            }
+        }
         if (!game.getReconnectList().isEmpty()) {
             if (game.getRoleMembersOnline(PlayerRole.HUNTER).isEmpty() || game.getRoleMembersOnline(PlayerRole.RUNNER).isEmpty()) {
                 return new GamePausedModule(plugin, game, this, new GameEndingNoPlayerModule(plugin, game), v -> !game.getRoleMembersOnline(PlayerRole.HUNTER).isEmpty() && !game.getRoleMembersOnline(PlayerRole.RUNNER).isEmpty());
@@ -64,7 +74,7 @@ public class GameStartedModule extends AbstractGameModule implements GameModule,
     private boolean checkNoRunnerAlive() {
         boolean anyAlive = false;
         for (UUID roleMemberUUID : game.getRoleMembers(PlayerRole.RUNNER)) {
-           // if (game.getReconnectList().contains(roleMemberUUID)) return false;
+            // if (game.getReconnectList().contains(roleMemberUUID)) return false;
             Player roleMember = Bukkit.getPlayer(roleMemberUUID);
             if (roleMember == null) continue;
             if (roleMember.getGameMode() == GameMode.SURVIVAL) anyAlive = true;
@@ -126,13 +136,6 @@ public class GameStartedModule extends AbstractGameModule implements GameModule,
     }
 
     @EventHandler(ignoreCancelled = true)
-    public void playerConnected(PlayerJoinEvent event) {
-        if (game.getPlayerRole(event.getPlayer()) == null) return;
-        event.joinMessage(plugin.text("paused.player-reconnected"));
-        event.getPlayer().setNoDamageTicks(100);
-    }
-
-    @EventHandler(ignoreCancelled = true)
     public void onPlayerDeath(PlayerPostRespawnEvent event) {
         PlayerRole role = game.getPlayerRole(event.getPlayer());
         if (role == null) return;
@@ -150,10 +153,11 @@ public class GameStartedModule extends AbstractGameModule implements GameModule,
         lastFocusLoc = new Location(event.getEntity().getWorld(), 0, 80, 0);
         dragonKilledMark = true;
     }
+
     @Nullable
     private Player findClosestRunner(Player hunter) {
         Player closestRunner = null;
-        for (Player runner : game.getRoleMembers(PlayerRole.RUNNER).stream().map(Bukkit::getPlayer).toList()) {
+        for (Player runner : game.getRoleMembersOnline(PlayerRole.RUNNER)) {
             if (runner.getWorld() != hunter.getWorld()) {
                 continue;
             }
@@ -164,7 +168,6 @@ public class GameStartedModule extends AbstractGameModule implements GameModule,
                 closestRunner = runner;
                 continue;
             }
-
             if (hunter.getLocation().distance(runner.getLocation()) < hunter.getLocation().distance(closestRunner.getLocation())) {
                 closestRunner = runner;
             }

@@ -26,11 +26,9 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.popcraft.chunky.api.ChunkyAPI;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Random;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.stream.Collectors;
 
 public class GameNotStartedModule extends AbstractGameModule implements GameModule, Listener, CommandExecutor {
     private final AtomicBoolean worldPregenerated = new AtomicBoolean(false);
@@ -172,7 +170,6 @@ public class GameNotStartedModule extends AbstractGameModule implements GameModu
         // re-assign non-role players
         tryAssignRolesForNonSpectatingPlayers();
         tryFixupRoles();
-
     }
 
     private void tryFixupRoles() {
@@ -180,7 +177,7 @@ public class GameNotStartedModule extends AbstractGameModule implements GameModu
         int hunterSize = game.getRoleMembers(PlayerRole.HUNTER).size();
         if (runnerSize == 0) {
             // move a hunter to runner
-            Collection<Player> hunters = game.getRoleMembers(PlayerRole.HUNTER).stream().map(Bukkit::getPlayer).toList();
+            Collection<Player> hunters = game.getRoleMembersOnline(PlayerRole.HUNTER);
             if (hunters.size() > 1) {
                 Player hunter = hunters.iterator().next();
                 attemptAssignRole(hunter);
@@ -188,7 +185,7 @@ public class GameNotStartedModule extends AbstractGameModule implements GameModu
         }
         if (hunterSize == 0) {
             // move a runner to hunter
-            Collection<Player> runners = game.getRoleMembers(PlayerRole.RUNNER).stream().map(Bukkit::getPlayer).toList();
+            Collection<Player> runners = game.getRoleMembersOnline(PlayerRole.RUNNER);
             if (runners.size() > 1) {
                 Player runner = runners.iterator().next();
                 attemptAssignRole(runner);
@@ -200,14 +197,10 @@ public class GameNotStartedModule extends AbstractGameModule implements GameModu
         List<? extends Player> noRolePlayers = Bukkit.getOnlinePlayers().stream()
                 .filter(p -> p.getGameMode() != GameMode.SPECTATOR)
                 .filter(p -> game.getPlayerRole(p) == null)
-                .toList();
-        if (noRolePlayers.size() == 0) return;
-        int selected = 0;
-        if (noRolePlayers.size() >= 2) {
-            selected = random.nextInt(noRolePlayers.size() - 1);
-        }
-        Player selectedPlayer = noRolePlayers.get(selected);
-        attemptAssignRole(selectedPlayer);
+                .collect(Collectors.toList());
+        if (noRolePlayers.isEmpty()) return;
+        Collections.shuffle(noRolePlayers);
+        noRolePlayers.forEach(this::attemptAssignRole);
     }
 
     @EventHandler(ignoreCancelled = true)
@@ -261,7 +254,6 @@ public class GameNotStartedModule extends AbstractGameModule implements GameModu
         if (spawnPoint.distance(to) > 30) {
             shouldCancel = true;
             plugin.getLogger().info("Mark as cancel cause distance too far");
-
         }
         if (shouldCancel) event.getPlayer().teleportAsync(spawnPoint).whenComplete((a, b) -> {
 
@@ -345,6 +337,13 @@ public class GameNotStartedModule extends AbstractGameModule implements GameModu
             case "start" -> {
                 if (sender.hasPermission("minehunt.admin.start")) {
                     remainingTime = 5 * 20;
+                }
+            }
+            case "shuffle" -> {
+                if (sender.hasPermission("minehunt.admin.shuffle")) {
+                    game.getAllRoleMembers().forEach(u -> game.setPlayerRole(u, null));
+                    tryAssignRolesForNonSpectatingPlayers();
+                    tryFixupRoles();
                 }
             }
             case "howtoplay" -> player.sendMessage(plugin.text("general.how-to-play"));

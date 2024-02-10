@@ -10,7 +10,6 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.ComponentLike;
 import net.kyori.adventure.text.TextReplacementConfig;
 import net.kyori.adventure.text.format.NamedTextColor;
-import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.Bukkit;
@@ -85,7 +84,8 @@ public final class BR_MineHunt extends JavaPlugin implements Listener {
             Component messageBody = LegacyComponentSerializer.legacySection().deserialize(event.getMessage());
             if (sourceRole == null && viewerRole != null) {
                 if (game.getActiveModule() instanceof GameStartedModule) {
-                    messageBody = Component.text("<一条观察者消息，您无法查看>").color(NamedTextColor.GRAY).decorate(TextDecoration.ITALIC);
+                    continue;
+                    //messageBody = Component.text("<比赛进行时无法查看观察者的消息>").color(NamedTextColor.GRAY).decorate(TextDecoration.ITALIC);
                 }
             }
             Component finalMessage;
@@ -99,8 +99,6 @@ public final class BR_MineHunt extends JavaPlugin implements Listener {
             }
             onlinePlayer.sendMessage(finalMessage);
         }
-
-
     }
 
     public Component text(String key, Object... args) {

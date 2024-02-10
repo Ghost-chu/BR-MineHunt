@@ -18,6 +18,7 @@ lang:
       -------
       游戏开始后，逃亡者将被传送到地图上的一个随机位置，以确保您有足够的机会和时间的准备，但请注意，
       猎人可以随时用指南针定位最近的逃亡者的位置。
+    joined-as-spectator: "<gray>{0} 以观察者身份加入旁观游戏</gray>"
   not-started:
     slot-full: "<red>很抱歉，但玩家人数已满，您只能作为旁观即将开始的游戏"
     joined-as: "<aqua>您已作为 <yellow>{0}</yellow> 加入了游戏"
@@ -38,6 +39,8 @@ lang:
     compass-tracking: "<green>位置更新成功，您正在追踪：<green>{0}</green>"
     runner-death: "<red>您已死亡，现在进入支援模式"
     player-reconnected: "<green><yellow>{0}</yellow> 已重新连接"
+    you-are-spectator: "<gray><i>您的身份是观察者，比赛期间发送的聊天无法被选手看到</i></gray>"
+    you-are-supporter: "<gray><i>您已进入支援模式，请善用观察者模式帮助你的队友</i></gray>"
   ending-no-player:
     session-ending: |
       <red>由于队伍人数不足，游戏已取消。

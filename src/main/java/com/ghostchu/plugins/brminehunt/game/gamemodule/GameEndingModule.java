@@ -14,8 +14,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Objects;
-
 public class GameEndingModule extends AbstractGameModule implements GameModule, Listener, CommandExecutor {
     private static final int endTimer = 120 * 20;
     private int remains = 0;
@@ -27,7 +25,8 @@ public class GameEndingModule extends AbstractGameModule implements GameModule, 
 
     @Override
     public GameModule init() {
-        game.getAllRoleMembers().stream().map(Bukkit::getPlayer).filter(Objects::nonNull).forEach(p -> p.setGameMode(GameMode.CREATIVE));
+        Bukkit.getOnlinePlayers().forEach(p->p.setGameMode(GameMode.CREATIVE));
+        //game.getAllRoleMembers().stream().map(Bukkit::getPlayer).filter(Objects::nonNull).forEach(p -> p.setGameMode(GameMode.CREATIVE));
         Bukkit.broadcast(plugin.text("ending.game-ended"));
         Bukkit.broadcast(plugin.text("ending.public-map-seed", Bukkit.getWorlds().get(0).getSeed()));
         Bukkit.getOnlinePlayers().forEach(p -> p.showBossBar(bossBar));

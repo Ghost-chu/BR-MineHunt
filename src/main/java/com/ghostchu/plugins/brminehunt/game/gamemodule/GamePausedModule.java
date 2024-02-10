@@ -88,6 +88,7 @@ public class GamePausedModule extends AbstractGameModule implements GameModule, 
             event.getPlayer().setNoDamageTicks(100);
             game.getReconnectList().remove(event.getPlayer().getUniqueId());
         } else {
+            event.joinMessage(plugin.text("general.joined-as-spectator", event.getPlayer().getName()));
             Bukkit.getScheduler().runTaskLater(plugin, () -> event.getPlayer().setGameMode(GameMode.SPECTATOR), 1);
         }
     }

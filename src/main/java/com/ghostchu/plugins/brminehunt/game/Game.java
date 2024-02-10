@@ -2,13 +2,10 @@ package com.ghostchu.plugins.brminehunt.game;
 
 import com.ghostchu.plugins.brminehunt.BR_MineHunt;
 import com.ghostchu.plugins.brminehunt.game.gamemodule.GameModule;
-import com.ghostchu.plugins.brminehunt.game.gamemodule.GameStartedModule;
 import com.google.common.collect.ImmutableList;
 import lombok.Getter;
-import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
-import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
@@ -40,15 +37,12 @@ public class Game implements Listener {
         this.plugin = plugin;
         Bukkit.getPluginManager().registerEvents(this, plugin);
         Bukkit.getScheduler().runTaskTimer(plugin, this::tickGameModule, 0, 1);
-        Bukkit.getScheduler().runTaskTimer(plugin, this::tickActionBarMessage, 0, 5);
         ScoreboardManager scoreboardManager = Bukkit.getScoreboardManager();
         Scoreboard mainScoreboard = scoreboardManager.getMainScoreboard();
         hunterTeam = mainScoreboard.registerNewTeam("hunter");
         runnerTeam = mainScoreboard.registerNewTeam("runner");
         hunterTeam.color(PlayerRole.HUNTER.getColor());
         runnerTeam.color(PlayerRole.RUNNER.getColor());
-//        hunterTeam.displayName(PlayerRole.HUNTER.getComponent());
-//        runnerTeam.displayName(PlayerRole.RUNNER.getComponent());
         hunterTeam.setAllowFriendlyFire(false);
         runnerTeam.setAllowFriendlyFire(false);
         hunterTeam.setOption(Team.Option.COLLISION_RULE, Team.OptionStatus.FOR_OTHER_TEAMS);
@@ -57,20 +51,6 @@ public class Game implements Listener {
         runnerTeam.setCanSeeFriendlyInvisibles(true);
         hunterTeam.prefix(PlayerRole.HUNTER.getChatPrefixComponent());
         runnerTeam.prefix(PlayerRole.RUNNER.getChatPrefixComponent());
-    }
-
-    private void tickActionBarMessage() {
-        if(!(getActiveModule() instanceof GameStartedModule)){
-            return;
-        }
-        for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
-            if (getPlayerRole(onlinePlayer.getUniqueId()) == null) {
-                onlinePlayer.sendActionBar(Component.text("您的身份是观察者，发送的聊天消息比赛内人员无法查看").color(NamedTextColor.GRAY).decorate(TextDecoration.ITALIC));
-            }
-            if (getPlayerRole(onlinePlayer.getUniqueId()) == PlayerRole.RUNNER && onlinePlayer.getGameMode() == GameMode.SPECTATOR) {
-                onlinePlayer.sendActionBar(Component.text("支援模式，可以使用旁观模式功能帮助你的队友").color(NamedTextColor.GRAY).decorate(TextDecoration.ITALIC));
-            }
-        }
     }
 
     private void tickGameModule() {
@@ -86,7 +66,6 @@ public class Game implements Listener {
         if (switchedModule != null) {
             setActiveModule(switchedModule);
         }
-
     }
 
     public void setActiveModule(GameModule switchGameModule) {
@@ -149,14 +128,25 @@ public class Game implements Listener {
 
     @NotNull
     public Collection<UUID> getRoleMembers(@NotNull PlayerRole role) {
-        return roleMapping.entrySet().stream().filter(entry -> entry.getValue() == role).map(Map.Entry::getKey).toList();
+        List<UUID> uuid = new ArrayList<>(roleMapping.size());
+        roleMapping.forEach((k, v) -> {
+            if (v == role) {
+                uuid.add(k);
+            }
+        });
+        return uuid;
     }
 
     @NotNull
     public Collection<Player> getRoleMembersOnline(@NotNull PlayerRole role) {
-        return roleMapping.entrySet().stream().filter(entry -> entry.getValue() == role).map(Map.Entry::getKey)
-                .map(Bukkit::getPlayer)
-                .filter(Objects::nonNull).toList();
+        Collection<Player> uuid = new ArrayList<>(roleMapping.size());
+        roleMapping.forEach((k, v) -> {
+            Player p = Bukkit.getPlayer(k);
+            if(p != null){
+                uuid.add(p);
+            }
+        });
+        return uuid;
     }
 
     @Nullable
