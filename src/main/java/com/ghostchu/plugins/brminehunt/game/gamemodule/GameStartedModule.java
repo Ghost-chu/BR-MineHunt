@@ -63,8 +63,8 @@ public class GameStartedModule extends AbstractGameModule implements GameModule,
 
     private boolean checkNoRunnerAlive() {
         boolean anyAlive = false;
-        for (UUID roleMemberUUID : game.getRoleMembers(PlayerRole.RUNNER).stream().toList()) {
-            if (game.getReconnectList().contains(roleMemberUUID)) return false;
+        for (UUID roleMemberUUID : game.getRoleMembers(PlayerRole.RUNNER)) {
+           // if (game.getReconnectList().contains(roleMemberUUID)) return false;
             Player roleMember = Bukkit.getPlayer(roleMemberUUID);
             if (roleMember == null) continue;
             if (roleMember.getGameMode() == GameMode.SURVIVAL) anyAlive = true;

@@ -2,6 +2,7 @@ package com.ghostchu.plugins.brminehunt.game;
 
 import com.ghostchu.plugins.brminehunt.BR_MineHunt;
 import com.ghostchu.plugins.brminehunt.game.gamemodule.GameModule;
+import com.ghostchu.plugins.brminehunt.game.gamemodule.GameStartedModule;
 import com.google.common.collect.ImmutableList;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
@@ -59,6 +60,9 @@ public class Game implements Listener {
     }
 
     private void tickActionBarMessage() {
+        if(!(getActiveModule() instanceof GameStartedModule)){
+            return;
+        }
         for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
             if (getPlayerRole(onlinePlayer.getUniqueId()) == null) {
                 onlinePlayer.sendActionBar(Component.text("您的身份是观察者，发送的聊天消息比赛内人员无法查看").color(NamedTextColor.GRAY).decorate(TextDecoration.ITALIC));
@@ -100,7 +104,6 @@ public class Game implements Listener {
         setPlayerRole(player.getUniqueId(), playerRole);
     }
 
-    @SuppressWarnings("removal")
     public void setPlayerRole(@NotNull UUID player, @Nullable PlayerRole playerRole) {
         OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(player);
         if (playerRole == null) {

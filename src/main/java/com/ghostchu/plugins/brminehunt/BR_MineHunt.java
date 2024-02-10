@@ -3,7 +3,7 @@ package com.ghostchu.plugins.brminehunt;
 import com.ghostchu.plugins.brminehunt.game.Game;
 import com.ghostchu.plugins.brminehunt.game.PlayerRole;
 import com.ghostchu.plugins.brminehunt.game.gamemodule.GameNotStartedModule;
-import io.papermc.paper.event.player.AsyncChatEvent;
+import com.ghostchu.plugins.brminehunt.game.gamemodule.GameStartedModule;
 import lombok.Getter;
 import net.kyori.adventure.bossbar.BossBar;
 import net.kyori.adventure.text.Component;
@@ -19,6 +19,7 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -53,18 +54,20 @@ public final class BR_MineHunt extends JavaPlugin implements Listener {
     public void onDisable() {
         // Plugin shutdown logic
     }
+
     @EventHandler(ignoreCancelled = true)
     public void onPlayerLeft(PlayerQuitEvent event) {
         Iterator<? extends BossBar> bossBarIterator = event.getPlayer().activeBossBars().iterator();
         List<BossBar> bossBarToRemove = new ArrayList<>();
-        while (bossBarIterator.hasNext()){
+        while (bossBarIterator.hasNext()) {
             bossBarToRemove.add(bossBarIterator.next());
         }
-        bossBarToRemove.forEach(b->event.getPlayer().hideBossBar(b));
-        if(game.getPlayerRole(event.getPlayer()) != null){
+        bossBarToRemove.forEach(b -> event.getPlayer().hideBossBar(b));
+        if (game.getPlayerRole(event.getPlayer()) != null) {
             game.getReconnectList().add(event.getPlayer().getUniqueId());
         }
     }
+
     @EventHandler(ignoreCancelled = true)
     public void onPlayerJoin(PlayerJoinEvent event) {
         if (game.getPlayerRole(event.getPlayer()) == null) return;
@@ -72,25 +75,32 @@ public final class BR_MineHunt extends JavaPlugin implements Listener {
         event.getPlayer().setNoDamageTicks(100);
         game.getReconnectList().remove(event.getPlayer().getUniqueId());
     }
+
     @EventHandler(ignoreCancelled = true)
-    public void onPlayerChat(AsyncChatEvent event) {
-        event.renderer((source, sourceDisplayName, message, viewer) -> {
-            PlayerRole sourceRole = game.getPlayerRole(source);
-            PlayerRole viewerRole = null;
-            if(viewer instanceof Player player){
-                viewerRole = game.getPlayerRole(player);
+    public void onPlayerChatting(AsyncPlayerChatEvent event) {
+        event.setCancelled(true);
+        PlayerRole sourceRole = game.getPlayerRole(event.getPlayer());
+        for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
+            PlayerRole viewerRole = game.getPlayerRole(onlinePlayer);
+            Component messageBody = LegacyComponentSerializer.legacySection().deserialize(event.getMessage());
+            if (sourceRole == null && viewerRole != null) {
+                if (game.getActiveModule() instanceof GameStartedModule) {
+                    messageBody = Component.text("<一条观察者消息，您无法查看>").color(NamedTextColor.GRAY).decorate(TextDecoration.ITALIC);
+                }
             }
-            if(sourceRole == null && viewerRole != null){
-                message = Component.text("<一条观察者消息，您无法查看>").color(NamedTextColor.GRAY).decorate(TextDecoration.ITALIC);
-            }
+            Component finalMessage;
             if (sourceRole == null) {
-                return Component.text("[观察者] ").color(NamedTextColor.GRAY).append(sourceDisplayName).append(Component.text(": ").color(NamedTextColor.WHITE)).append(message.color(NamedTextColor.GRAY));
+                finalMessage = Component.text("[观察者]").color(NamedTextColor.GRAY).append(LegacyComponentSerializer.legacySection().deserialize(event.getPlayer().getName())).append(Component.text(": ").color(NamedTextColor.WHITE)).append(messageBody.color(NamedTextColor.GRAY));
+            } else {
+                finalMessage = sourceRole.getChatPrefixComponent()
+                        .append(Component.text(event.getPlayer().getName()).color(NamedTextColor.WHITE))
+                        .append(Component.text(": ").color(NamedTextColor.WHITE))
+                        .append(messageBody.color(NamedTextColor.WHITE));
             }
-            return sourceRole.getChatPrefixComponent()
-                    .append(Component.text(source.getName()).color(NamedTextColor.WHITE))
-                    .append(Component.text(": ").color(NamedTextColor.WHITE))
-                    .append(message.color(NamedTextColor.WHITE));
-        });
+            onlinePlayer.sendMessage(finalMessage);
+        }
+
+
     }
 
     public Component text(String key, Object... args) {
