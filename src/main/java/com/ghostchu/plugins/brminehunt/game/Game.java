@@ -144,9 +144,11 @@ public class Game implements Listener {
     public Collection<Player> getRoleMembersOnline(@NotNull PlayerRole role) {
         Collection<Player> uuid = new ArrayList<>(roleMapping.size());
         roleMapping.forEach((k, v) -> {
-            Player p = Bukkit.getPlayer(k);
-            if (p != null) {
-                uuid.add(p);
+            if(v == role) {
+                Player p = Bukkit.getPlayer(k);
+                if (p != null) {
+                    uuid.add(p);
+                }
             }
         });
         return uuid;

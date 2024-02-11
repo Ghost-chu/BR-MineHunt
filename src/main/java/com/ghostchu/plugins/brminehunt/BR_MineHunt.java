@@ -60,20 +60,15 @@ public final class BR_MineHunt extends JavaPlugin implements Listener, @NotNull 
 
     @EventHandler(ignoreCancelled = true)
     public void onPlayerLeft(PlayerQuitEvent event) {
+        if (game.getPlayerRole(event.getPlayer()) != null) {
+            game.getReconnectList().add(event.getPlayer().getUniqueId());
+        }
         Iterator<? extends BossBar> bossBarIterator = event.getPlayer().activeBossBars().iterator();
         List<BossBar> bossBarToRemove = new ArrayList<>();
         while (bossBarIterator.hasNext()) {
             bossBarToRemove.add(bossBarIterator.next());
         }
         bossBarToRemove.forEach(b -> event.getPlayer().hideBossBar(b));
-        if (game.getPlayerRole(event.getPlayer()) != null) {
-            game.getReconnectList().add(event.getPlayer().getUniqueId());
-        }
-    }
-
-    @EventHandler(ignoreCancelled = true)
-    public void onPlayerJoin(PlayerRegisterChannelEvent event) {
-        getLogger().info(event.getChannel());
     }
 
     @EventHandler(ignoreCancelled = true)
@@ -87,9 +82,7 @@ public final class BR_MineHunt extends JavaPlugin implements Listener, @NotNull 
     @EventHandler(ignoreCancelled = true)
     public void antiCheat(PlayerJoinEvent event) {
         playerAntiCheat(event.getPlayer());
-        Bukkit.getScheduler().runTaskLater(this, () -> {
-            event.getPlayer().sendMessage(text("general.anti-cheat-warning"));
-        }, 60L);
+        Bukkit.getScheduler().runTaskLater(this, () -> event.getPlayer().sendMessage(text("general.anti-cheat-warning")), 60L);
     }
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)

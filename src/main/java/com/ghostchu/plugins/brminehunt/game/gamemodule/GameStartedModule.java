@@ -71,6 +71,7 @@ public class GameStartedModule extends AbstractGameModule implements GameModule,
         return null;
     }
 
+
     private boolean checkNoRunnerAlive() {
         boolean anyAlive = false;
         for (UUID roleMemberUUID : game.getRoleMembers(PlayerRole.RUNNER)) {

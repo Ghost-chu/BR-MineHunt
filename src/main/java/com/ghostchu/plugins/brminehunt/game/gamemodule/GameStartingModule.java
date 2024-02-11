@@ -48,7 +48,7 @@ public class GameStartingModule extends AbstractGameModule implements GameModule
 
         try {
             ReplayAPI.setReplayName(game.getMatchId().toString());
-            Bukkit.broadcast(plugin.text("public-match-info", game.getMatchId().toString(), ReplayAPI.getReplayID()));
+            Bukkit.broadcast(plugin.text("ending.public-match-info", game.getMatchId().toString(), ReplayAPI.getReplayID()));
         } catch (Throwable th) {
             th.printStackTrace();
         }
