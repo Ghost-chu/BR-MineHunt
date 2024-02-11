@@ -47,8 +47,7 @@ public class GameStartingModule extends AbstractGameModule implements GameModule
         game.getRoleMembers(PlayerRole.RUNNER).stream().map(Bukkit::getPlayer).toList().forEach(p -> p.teleportAsync(airDropAt).whenComplete((a, b) -> p.setBedSpawnLocation(airDropAt, true)));
 
         try {
-            ReplayAPI.setReplayName(game.getMatchId().toString());
-            Bukkit.broadcast(plugin.text("ending.public-match-info", game.getMatchId().toString(), ReplayAPI.getReplayID()));
+            Bukkit.broadcast(plugin.text("ending.public-match-info", game.getMatchId(), ReplayAPI.getReplayID()));
         } catch (Throwable th) {
             th.printStackTrace();
         }

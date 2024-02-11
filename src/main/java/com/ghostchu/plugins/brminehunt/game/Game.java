@@ -33,7 +33,7 @@ public class Game implements Listener {
     @Getter
     private final Set<UUID> reconnectList = new CopyOnWriteArraySet<>();
     @Getter
-    private final UUID matchId = UUID.randomUUID();
+    private final String matchId = UUID.randomUUID().toString().replace("-","");
 
     public Game(BR_MineHunt plugin) {
         this.plugin = plugin;

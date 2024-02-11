@@ -54,10 +54,10 @@ public class GameStartedModule extends AbstractGameModule implements GameModule,
         if (totalTicked % 5 == 0) {
             for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
                 if (game.getPlayerRole(onlinePlayer.getUniqueId()) == null) {
-                    onlinePlayer.sendActionBar(plugin.text("you-are-spectator"));
+                    onlinePlayer.sendActionBar(plugin.text("started.you-are-spectator"));
                 }
                 if (game.getPlayerRole(onlinePlayer.getUniqueId()) == PlayerRole.RUNNER && onlinePlayer.getGameMode() == GameMode.SPECTATOR) {
-                    onlinePlayer.sendActionBar(plugin.text("you-are-supporter"));
+                    onlinePlayer.sendActionBar(plugin.text("started.you-are-supporter"));
                 }
             }
         }

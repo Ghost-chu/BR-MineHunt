@@ -33,9 +33,7 @@ public class GameEndingModule extends AbstractGameModule implements GameModule, 
 
         Bukkit.getOnlinePlayers().forEach(p -> p.showBossBar(bossBar));
         try {
-            ReplayAPI.setReplayName(game.getMatchId().toString());
-            Bukkit.broadcast(plugin.text("ending.public-match-info", game.getMatchId().toString(), ReplayAPI.getReplayID()));
-            ReplayAPI.saveReplay();
+            Bukkit.broadcast(plugin.text("ending.public-match-info", game.getMatchId(), ReplayAPI.getReplayID()));
         } catch (Throwable th) {
             th.printStackTrace();
         }

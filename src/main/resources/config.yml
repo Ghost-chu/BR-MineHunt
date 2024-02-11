@@ -64,7 +64,7 @@ lang:
       <yellow>您已被切换为<green>创造模式</green>，在服务器关闭之前放飞自我吧！
     shutdown-count-down: "<red>服务器将在 <gold>{0}</gold> 秒后关闭"
     public-map-seed: "<gold>本场比赛地图种子：<white>[<green>{0}</green>]</white>"
-    public-match-info: "<gold>比赛ID：<white>[<green>{0}</green>]</white>，回放ID：<white>[<green>{1}</green>]</white></gold>"
+    public-match-info: "<gold>回放ID：<white>[<green>{1}</green>]</white></gold>"
   match-complete:
     runner-win: "<gold><bold>末影龙已被击杀，胜利属于<green>逃亡者</green>！"
     hunter-win: "<gold><bold>逃亡者已死亡，胜利属于<red>猎人</red>！"
