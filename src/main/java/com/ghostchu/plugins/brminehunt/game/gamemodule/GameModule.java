@@ -6,8 +6,10 @@ import org.bukkit.event.Listener;
 
 public interface GameModule extends Listener, TabCompleter, CommandExecutor {
     GameModule init();
+
     GameModule tick();
 
     void setInited(boolean inited);
+
     boolean isInited();
 }

@@ -49,7 +49,7 @@ public class GamePausedModule extends AbstractGameModule implements GameModule, 
         Bukkit.getOnlinePlayers().forEach(p -> {
             p.showTitle(Title.title(plugin.text("paused.title"), plugin.text("paused.subtitle")));
             p.showBossBar(bossBar);
-            p.playSound(p.getLocation(), Sound.ENTITY_ITEM_BREAK, 1,1);
+            p.playSound(p.getLocation(), Sound.ENTITY_ITEM_BREAK, 1, 1);
         });
         Bukkit.broadcast(plugin.text("paused.enter-message", waitingTime / 20));
         return null;
@@ -75,8 +75,8 @@ public class GamePausedModule extends AbstractGameModule implements GameModule, 
     }
 
     @EventHandler(ignoreCancelled = true)
-    public void onPlayerLeft(PlayerQuitEvent event){
-        if(game.getPlayerRole(event.getPlayer()) != null){
+    public void onPlayerLeft(PlayerQuitEvent event) {
+        if (game.getPlayerRole(event.getPlayer()) != null) {
             game.getReconnectList().add(event.getPlayer().getUniqueId());
         }
     }
@@ -177,6 +177,7 @@ public class GamePausedModule extends AbstractGameModule implements GameModule, 
     public void playerDamageEntity(EntityDamageEvent event) {
         event.setCancelled(true);
     }
+
     @EventHandler(ignoreCancelled = true)
     public void playerDamageEntity(PlayerItemDamageEvent event) {
         event.setCancelled(true);
@@ -184,7 +185,7 @@ public class GamePausedModule extends AbstractGameModule implements GameModule, 
 
     @EventHandler(ignoreCancelled = true)
     public void playerDamageEntity(EntityTargetEvent event) {
-        if(event.getTarget() instanceof Player){
+        if (event.getTarget() instanceof Player) {
             event.setCancelled(true);
         }
     }

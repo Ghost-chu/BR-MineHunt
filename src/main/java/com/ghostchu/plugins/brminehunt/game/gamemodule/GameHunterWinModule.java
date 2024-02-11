@@ -22,7 +22,7 @@ import java.util.Objects;
 
 public class GameHunterWinModule extends AbstractGameModule implements GameModule, Listener, CommandExecutor {
     private long totalTicked = 0;
-    private static final long nextModuleTick = 20*10;
+    private static final long nextModuleTick = 20 * 10;
     private final Location focusLocation;
 
     protected GameHunterWinModule(BR_MineHunt plugin, Game game, Location focusLocation) {
@@ -33,13 +33,13 @@ public class GameHunterWinModule extends AbstractGameModule implements GameModul
     @Override
     public GameModule init() {
         List<Player> teleportPlayers = game.getAllRoleMembers().stream().map(Bukkit::getPlayer).filter(Objects::nonNull).toList();
-        teleportPlayers.forEach(p->{
+        teleportPlayers.forEach(p -> {
             p.setGameMode(GameMode.SPECTATOR);
             p.teleport(focusLocation);
-            p.playSound(p.getLocation(), Sound.MUSIC_DISC_PIGSTEP,1.0f,1.0f);
+            p.playSound(p.getLocation(), Sound.MUSIC_DISC_PIGSTEP, 1.0f, 1.0f);
         });
-        game.getRoleMembers(PlayerRole.HUNTER).stream().map(Bukkit::getPlayer).toList().forEach(p-> p.showTitle(Title.title(plugin.text("match-complete.title-win"),plugin.text("match-complete.subtitle-win") )));
-        game.getRoleMembers(PlayerRole.RUNNER).stream().map(Bukkit::getPlayer).toList().forEach(p-> p.showTitle(Title.title(plugin.text("match-complete.title-lose"),plugin.text("match-complete.subtitle-lose") )));
+        game.getRoleMembers(PlayerRole.HUNTER).stream().map(Bukkit::getPlayer).toList().forEach(p -> p.showTitle(Title.title(plugin.text("match-complete.title-win"), plugin.text("match-complete.subtitle-win"))));
+        game.getRoleMembers(PlayerRole.RUNNER).stream().map(Bukkit::getPlayer).toList().forEach(p -> p.showTitle(Title.title(plugin.text("match-complete.title-lose"), plugin.text("match-complete.subtitle-lose"))));
         Bukkit.broadcast(plugin.text("match-complete.hunter-win"));
         return null;
     }
@@ -58,8 +58,8 @@ public class GameHunterWinModule extends AbstractGameModule implements GameModul
 
     @Override
     public GameModule tick() {
-        totalTicked ++;
-        if(totalTicked >= nextModuleTick) return new GameEndingModule(plugin, game);
+        totalTicked++;
+        if (totalTicked >= nextModuleTick) return new GameEndingModule(plugin, game);
         return null;
     }
 

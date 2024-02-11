@@ -18,9 +18,10 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Objects;
 
 public class GameEndingNoPlayerModule extends AbstractGameModule implements GameModule, Listener, CommandExecutor {
-    private static final int endTimer = 30*20;
+    private static final int endTimer = 30 * 20;
     private int remains = 0;
-    private final BossBar bossBar = BossBar.bossBar(Component.text("N/A"),1.0f, BossBar.Color.PURPLE, BossBar.Overlay.PROGRESS);
+    private final BossBar bossBar = BossBar.bossBar(Component.text("N/A"), 1.0f, BossBar.Color.PURPLE, BossBar.Overlay.PROGRESS);
+
     protected GameEndingNoPlayerModule(BR_MineHunt plugin, Game game) {
         super(plugin, game);
     }
@@ -39,11 +40,11 @@ public class GameEndingNoPlayerModule extends AbstractGameModule implements Game
 
     @Override
     public GameModule tick() {
-        remains --;
+        remains--;
         bossBar.progress((float) remains / endTimer);
         bossBar.name(plugin.text("ending-no-player.bossbar", (int) (remains / 20.0)));
         bossBar.color(BossBar.Color.RED);
-        if(remains > 0){
+        if (remains > 0) {
             return null;
         }
         Bukkit.getOnlinePlayers().forEach(p -> p.hideBossBar(bossBar));
@@ -51,11 +52,11 @@ public class GameEndingNoPlayerModule extends AbstractGameModule implements Game
     }
 
     @EventHandler(ignoreCancelled = true)
-    public void onPlayerJoin(PlayerJoinEvent event){
-        Bukkit.getScheduler().runTaskLater(plugin, ()->{
+    public void onPlayerJoin(PlayerJoinEvent event) {
+        Bukkit.getScheduler().runTaskLater(plugin, () -> {
             event.getPlayer().setGameMode(GameMode.CREATIVE);
             event.getPlayer().showBossBar(bossBar);
-        },1);
+        }, 1);
     }
 
     @Override

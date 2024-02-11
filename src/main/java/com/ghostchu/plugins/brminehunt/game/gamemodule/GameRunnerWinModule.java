@@ -38,7 +38,6 @@ public class GameRunnerWinModule extends AbstractGameModule implements GameModul
     }
 
 
-
     @Override
     public GameModule tick() {
         totalTicked++;

@@ -3,6 +3,7 @@ package com.ghostchu.plugins.brminehunt.game.gamemodule;
 import com.ghostchu.plugins.brminehunt.BR_MineHunt;
 import com.ghostchu.plugins.brminehunt.game.Game;
 import com.ghostchu.plugins.brminehunt.game.PlayerRole;
+import de.musterbukkit.replaysystem.main.ReplayAPI;
 import org.bukkit.*;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -33,8 +34,8 @@ public class GameStartingModule extends AbstractGameModule implements GameModule
         Location airDropAt = airDrop(Bukkit.getWorlds().get(0).getSpawnLocation());
 
         Bukkit.getWorlds().get(0).setSpawnLocation(Bukkit.getWorlds().get(0).getSpawnLocation());
-        Bukkit.getOnlinePlayers().forEach(p->{
-            if(game.getPlayerRole(p.getUniqueId()) == null){
+        Bukkit.getOnlinePlayers().forEach(p -> {
+            if (game.getPlayerRole(p.getUniqueId()) == null) {
                 p.setGameMode(GameMode.SPECTATOR);
                 p.teleportAsync(Bukkit.getWorlds().get(0).getSpawnLocation());
             }
@@ -44,6 +45,13 @@ public class GameStartingModule extends AbstractGameModule implements GameModule
             p.getInventory().addItem(new ItemStack(Material.COMPASS, 1));
         }));
         game.getRoleMembers(PlayerRole.RUNNER).stream().map(Bukkit::getPlayer).toList().forEach(p -> p.teleportAsync(airDropAt).whenComplete((a, b) -> p.setBedSpawnLocation(airDropAt, true)));
+
+        try {
+            ReplayAPI.setReplayName(game.getMatchId().toString());
+            Bukkit.broadcast(plugin.text("public-match-info", game.getMatchId().toString(), ReplayAPI.getReplayID()));
+        } catch (Throwable th) {
+            th.printStackTrace();
+        }
         return new GameStartedModule(plugin, game);
     }
 

@@ -9,7 +9,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-public abstract class AbstractGameModule implements GameModule{
+public abstract class AbstractGameModule implements GameModule {
     public final Game game;
     public final BR_MineHunt plugin;
     private boolean isInited;

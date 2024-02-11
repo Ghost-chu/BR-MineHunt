@@ -2,6 +2,7 @@ package com.ghostchu.plugins.brminehunt.game.gamemodule;
 
 import com.ghostchu.plugins.brminehunt.BR_MineHunt;
 import com.ghostchu.plugins.brminehunt.game.Game;
+import de.musterbukkit.replaysystem.main.ReplayAPI;
 import net.kyori.adventure.bossbar.BossBar;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
@@ -25,11 +26,19 @@ public class GameEndingModule extends AbstractGameModule implements GameModule, 
 
     @Override
     public GameModule init() {
-        Bukkit.getOnlinePlayers().forEach(p->p.setGameMode(GameMode.CREATIVE));
+        Bukkit.getOnlinePlayers().forEach(p -> p.setGameMode(GameMode.CREATIVE));
         //game.getAllRoleMembers().stream().map(Bukkit::getPlayer).filter(Objects::nonNull).forEach(p -> p.setGameMode(GameMode.CREATIVE));
         Bukkit.broadcast(plugin.text("ending.game-ended"));
         Bukkit.broadcast(plugin.text("ending.public-map-seed", Bukkit.getWorlds().get(0).getSeed()));
+
         Bukkit.getOnlinePlayers().forEach(p -> p.showBossBar(bossBar));
+        try {
+            ReplayAPI.setReplayName(game.getMatchId().toString());
+            Bukkit.broadcast(plugin.text("public-match-info", game.getMatchId().toString(), ReplayAPI.getReplayID()));
+            ReplayAPI.saveReplay();
+        } catch (Throwable th) {
+            th.printStackTrace();
+        }
         remains = endTimer;
         return null;
     }
@@ -49,10 +58,10 @@ public class GameEndingModule extends AbstractGameModule implements GameModule, 
 
     @EventHandler(ignoreCancelled = true)
     public void onPlayerJoin(PlayerJoinEvent event) {
-        Bukkit.getScheduler().runTaskLater(plugin, ()->{
+        Bukkit.getScheduler().runTaskLater(plugin, () -> {
             event.getPlayer().setGameMode(GameMode.CREATIVE);
             event.getPlayer().showBossBar(bossBar);
-        },1);
+        }, 1);
     }
 
     @Override

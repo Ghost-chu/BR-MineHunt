@@ -32,6 +32,8 @@ public class Game implements Listener {
     private final Map<UUID, PlayerRole> roleMapping = new ConcurrentHashMap<>(); //线程安全
     @Getter
     private final Set<UUID> reconnectList = new CopyOnWriteArraySet<>();
+    @Getter
+    private final UUID matchId = UUID.randomUUID();
 
     public Game(BR_MineHunt plugin) {
         this.plugin = plugin;
@@ -51,6 +53,7 @@ public class Game implements Listener {
         runnerTeam.setCanSeeFriendlyInvisibles(true);
         hunterTeam.prefix(PlayerRole.HUNTER.getChatPrefixComponent());
         runnerTeam.prefix(PlayerRole.RUNNER.getChatPrefixComponent());
+        getLogger().info("MatchID " + matchId);
     }
 
     private void tickGameModule() {
@@ -142,7 +145,7 @@ public class Game implements Listener {
         Collection<Player> uuid = new ArrayList<>(roleMapping.size());
         roleMapping.forEach((k, v) -> {
             Player p = Bukkit.getPlayer(k);
-            if(p != null){
+            if (p != null) {
                 uuid.add(p);
             }
         });

@@ -357,6 +357,11 @@ public class GameNotStartedModule extends AbstractGameModule implements GameModu
 
     @Override
     public @Nullable List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
-        return null;
+        List<String> list =  new ArrayList<>(List.of("spectate", "howtoplay", "codusk", "help"));
+        if(sender.hasPermission("minehunt.admin.start"))
+            list.add("start");
+        if(sender.hasPermission("minehunt.admin.shuffle"))
+            list.add("shuffle");
+        return list;
     }
 }
