@@ -5,14 +5,11 @@ import com.ghostchu.plugins.brminehunt.game.Game;
 import com.ghostchu.plugins.brminehunt.game.PlayerRole;
 import de.musterbukkit.replaysystem.main.ReplayAPI;
 import org.bukkit.*;
-import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
-import org.bukkit.command.CommandSender;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.inventory.ItemStack;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.Random;
 
@@ -45,11 +42,8 @@ public class GameStartingModule extends AbstractGameModule implements GameModule
             p.getInventory().addItem(new ItemStack(Material.COMPASS, 1));
         }));
         game.getRoleMembers(PlayerRole.RUNNER).stream().map(Bukkit::getPlayer).toList().forEach(p -> p.teleportAsync(airDropAt).whenComplete((a, b) -> p.setBedSpawnLocation(airDropAt, true)));
-
-        try {
-            Bukkit.broadcast(plugin.text("ending.public-match-info", game.getMatchId(), ReplayAPI.getReplayID()));
-        } catch (Throwable th) {
-            th.printStackTrace();
+        if(Bukkit.getPluginManager().isPluginEnabled("ReplaySystem")){
+            Bukkit.broadcast(plugin.text("ending.public-match-info", ReplayAPI.getReplayID()));
         }
         return new GameStartedModule(plugin, game);
     }
@@ -57,11 +51,6 @@ public class GameStartingModule extends AbstractGameModule implements GameModule
     @Override
     public GameModule tick() {
         throw new IllegalStateException(getClass().getName() + " is un-tickable and should transfer to next module when init()");
-    }
-
-    @Override
-    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
-        return false;
     }
 
     @EventHandler(ignoreCancelled = true)

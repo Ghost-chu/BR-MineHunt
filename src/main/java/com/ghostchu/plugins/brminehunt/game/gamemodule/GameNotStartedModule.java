@@ -59,25 +59,29 @@ public class GameNotStartedModule extends AbstractGameModule implements GameModu
         Location spawnPoint = defWorld.getSpawnLocation();
         ChunkyAPI chunky = Bukkit.getServer().getServicesManager().load(ChunkyAPI.class);
         if (chunky == null) return;
-        chunky.startTask(defWorld.getName(), "square", spawnPoint.getBlockX(), spawnPoint.getBlockZ(), 500, 500, "concentric");
-        chunky.onGenerationProgress(e -> {
-            if (!e.complete()) {
-                mapGenerate.progress(e.progress() / 100.0f);
-                mapGenerate.color(BossBar.Color.YELLOW);
-                mapGenerate.name(plugin.text("not-started.bossbar-map-generate", String.format("%.2f", e.progress()) + "%", e.chunks()));
-            } else {
+        if (plugin.getConfig().getLong("pregen-radius", 0) != 0) {
+            chunky.startTask(defWorld.getName(), "square", spawnPoint.getBlockX(), spawnPoint.getBlockZ(), plugin.getConfig().getLong("pregen-radius", 0), plugin.getConfig().getLong("pregen-radius", 0), "concentric");
+            chunky.onGenerationProgress(e -> {
+                if (!e.complete()) {
+                    mapGenerate.progress(e.progress() / 100.0f);
+                    mapGenerate.color(BossBar.Color.YELLOW);
+                    mapGenerate.name(plugin.text("not-started.bossbar-map-generate", String.format("%.2f", e.progress()) + "%", e.chunks()));
+                } else {
+                    mapGenerate.progress(1.0f);
+                    mapGenerate.color(BossBar.Color.GREEN);
+                    mapGenerate.name(plugin.text("not-started.bossbar-map-generated"));
+                    worldPregenerated.set(true);
+                }
+            });
+            chunky.onGenerationComplete(e -> {
                 mapGenerate.progress(1.0f);
                 mapGenerate.color(BossBar.Color.GREEN);
                 mapGenerate.name(plugin.text("not-started.bossbar-map-generated"));
                 worldPregenerated.set(true);
-            }
-        });
-        chunky.onGenerationComplete(e -> {
-            mapGenerate.progress(1.0f);
-            mapGenerate.color(BossBar.Color.GREEN);
-            mapGenerate.name(plugin.text("not-started.bossbar-map-generated"));
+            });
+        } else {
             worldPregenerated.set(true);
-        });
+        }
     }
 
     @Override
@@ -357,10 +361,10 @@ public class GameNotStartedModule extends AbstractGameModule implements GameModu
 
     @Override
     public @Nullable List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
-        List<String> list =  new ArrayList<>(List.of("spectate", "howtoplay", "codusk", "help"));
-        if(sender.hasPermission("minehunt.admin.start"))
+        List<String> list = new ArrayList<>(List.of("spectate", "howtoplay", "codusk", "help"));
+        if (sender.hasPermission("minehunt.admin.start"))
             list.add("start");
-        if(sender.hasPermission("minehunt.admin.shuffle"))
+        if (sender.hasPermission("minehunt.admin.shuffle"))
             list.add("shuffle");
         return list;
     }

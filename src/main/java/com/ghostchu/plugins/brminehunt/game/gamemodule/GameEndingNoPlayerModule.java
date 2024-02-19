@@ -2,6 +2,7 @@ package com.ghostchu.plugins.brminehunt.game.gamemodule;
 
 import com.ghostchu.plugins.brminehunt.BR_MineHunt;
 import com.ghostchu.plugins.brminehunt.game.Game;
+import de.musterbukkit.replaysystem.main.ReplayAPI;
 import net.kyori.adventure.bossbar.BossBar;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.title.Title;
@@ -34,6 +35,9 @@ public class GameEndingNoPlayerModule extends AbstractGameModule implements Game
             p.showTitle(Title.title(plugin.text("ending-no-player.title"), plugin.text("ending-no-player.subtitle")));
             p.showBossBar(bossBar);
         });
+        if(Bukkit.getPluginManager().isPluginEnabled("ReplaySystem")){
+            Bukkit.broadcast(plugin.text("ending.public-match-info", ReplayAPI.getReplayID()));
+        }
         remains = endTimer;
         return null;
     }

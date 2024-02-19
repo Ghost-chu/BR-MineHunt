@@ -5,6 +5,7 @@ server-name: "RIAZth"
 runner-airdrop: true
 waiting-time: 60
 pause-max-time: 120
+pregen-radius: 250
 
 lang:
   general:
@@ -51,6 +52,9 @@ lang:
     player-reconnected: "<green><yellow>{0}</yellow> 已重新连接"
     you-are-spectator: "<gray><i>您的身份是观察者，比赛期间发送的聊天无法被选手看到</i></gray>"
     you-are-supporter: "<gray><i>您已进入支援模式，请善用观察者模式帮助你的队友</i></gray>"
+    switch-to-spectator: "<yellow>{0}</yellow><green>已放弃比赛并切换到观察者模式</green>"
+    force-joined: "<green>管理员<yellow>{0}</yellow>已使<yellow>{1}</yellow>强制以<yellow>{2}</yellow>身份加入了正在进行的游戏，并自动传送到了队友<yellow>{3}</yellow>位置。"
+    no-invsee-for-team: "<gray>此命令仅观察者可用，抱歉！"
   ending-no-player:
     session-ending: |-
       <red>由于队伍人数不足，游戏已取消。

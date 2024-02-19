@@ -14,6 +14,7 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
@@ -220,6 +221,6 @@ public final class BR_MineHunt extends JavaPlugin implements Listener, @NotNull 
 
     @Override
     public void onPluginMessageReceived(@NotNull String channel, @NotNull Player player, @NotNull byte[] message) {
-        player.kick(Component.text("JourneyMap incompatible with this server."));
+        player.sendMessage(ChatColor.RED+""+ChatColor.BOLD+"检测到您已安装 JourneyMap，请手动关闭 JournalMap 的生物雷达。MineHunt 中使用生物雷达和洞穴地图将被视为作弊，并会导致账号封禁");
     }
 }
