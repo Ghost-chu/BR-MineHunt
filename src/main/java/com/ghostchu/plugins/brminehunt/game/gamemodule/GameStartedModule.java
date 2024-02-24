@@ -82,7 +82,7 @@ public class GameStartedModule extends AbstractGameModule implements GameModule,
     private void giveNightVision() {
         Bukkit.getOnlinePlayers().forEach(p -> {
             if (p.getGameMode() == GameMode.SPECTATOR) {
-                p.addPotionEffect(new PotionEffect(PotionEffectType.NIGHT_VISION, 20*8, 1, false, false));
+                p.addPotionEffect(new PotionEffect(PotionEffectType.NIGHT_VISION, 20*30, 1, false, false));
             }
         });
     }
